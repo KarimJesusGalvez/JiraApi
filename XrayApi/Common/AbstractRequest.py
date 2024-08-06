@@ -5,6 +5,8 @@ from Config.Auth.Token.Token_Headers import get_headers
 from XrayApi.Common.Response import JiraResponse
 
 server_url = get_server_url()
+log = logging.getLogger("Xray.AbstractRequest")
+
 
 def get_request(url: str) -> JiraResponse:
     response = requests.get(url, headers=get_headers())

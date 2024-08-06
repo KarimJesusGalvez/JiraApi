@@ -1,7 +1,10 @@
+import logging
 from requests import Response
 from XrayApi.Common.AbstractRequest import get_issue_steps, get_request, server_url
 from XrayApi.Common.Response import JiraResponse
 
+
+log = logging.getLogger("Xray.Tests")
 
 def get_test_plan_from_test(issue_id: str) -> JiraResponse:
     return get_test_field(issue_id, "testplans")

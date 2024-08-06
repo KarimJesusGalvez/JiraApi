@@ -1,5 +1,7 @@
+import logging
 from os import path
 
+log = logging.getLogger("Auth.Token")
 
 def read_token() -> str:
     with open(path.join(path.dirname(__file__), "token.txt"), "r") as file:

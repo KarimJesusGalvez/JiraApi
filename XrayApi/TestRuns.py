@@ -1,5 +1,9 @@
+import logging
+
 from XrayApi.Common.AbstractRequest import server_url, get_request, put_request, post_request, delete_request
 from XrayApi.Common.Response import JiraResponse
+
+log = logging.getLogger("Xray.Runs")
 
 
 def get_run_tests(run_id: str) -> JiraResponse:
