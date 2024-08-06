@@ -29,6 +29,14 @@ def delete_request(url: str) -> JiraResponse:
     return JiraResponse(response)
 
 
+def put_request(url: str, fields: dict) -> JiraResponse:
+    response = requests.put(url, data=fields, headers=get_headers())
+    # TODO refactor error msg
+    if response.status_code != 200:
+        logging.getLogger().error(f"Error {response.status_code} in response:\n {response.text}")
+    return JiraResponse(response)
+
+
 def get_issue_steps(issue_type: str, issue_id: str, field: str) -> JiraResponse:
     url = server_url + f"/rest/raven/2.0/api/{issue_type}/{issue_id}/{field}"
 
