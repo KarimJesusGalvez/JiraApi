@@ -2,7 +2,7 @@ from os import path
 
 
 def read_token() -> str:
-    with open(path.join(path.dirname(__file__),"Auth/Token/token.txt"), "r") as file:
+    with open(path.join(path.dirname(__file__), "token.txt"), "r") as file:
         return file.read()
 
 
