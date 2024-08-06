@@ -1,4 +1,6 @@
 import logging
+from json import JSONDecodeError
+
 from requests import Response
 
 
@@ -11,7 +13,12 @@ class JiraResponse:
         self._parse_response()
 
     def _parse_response(self) -> None:
-        self.parsed = self.raw.json()
+        try:
+            self.parsed = self.raw.json()
+        except JSONDecodeError as error:
+            self.log.error(f"Decode error in pos {error.pos} in document {error.doc}")
+            raise
+
         self.log.debug(f"Found {len(self.parsed)} resources in {self.raw.url}")
         for data in self.parsed:
             self.log.debug(f"Found resource {data}")
