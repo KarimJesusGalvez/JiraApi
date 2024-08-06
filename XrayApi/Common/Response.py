@@ -27,10 +27,17 @@ class JiraResponse:
 
     def _parse_status_code(self) -> None:
         code = int(self.raw.status_code)
-        if 200 <= code < 300:
+        if code == 200:
             self.log.debug(f"Response status OK with {code}")
+            return
+        elif code == 400:
+            msg = f"Bad_request in Response with {code} and error text '{self.raw.text}'"
+        elif code == 401:
+            msg = "Unauthorized licence'"
+        elif code == 500:
+            msg = "Internal Server error in Response'"
         else:
             msg = f"Error in Response with {code} and error text '{self.raw.text}'"
-            self.log.error(msg)
-            # TODO retrieve HTTPResponse data
-            raise ValueError(msg)
+        self.log.error(msg)
+        # TODO retrieve HTTPResponse data
+        raise ValueError(msg)
