@@ -1,3 +1,6 @@
+#Tokens
+Auth/Token/token.txt
+
 #Artifacts
 /*.egg-info
 /build
