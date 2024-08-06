@@ -7,5 +7,5 @@ Collection of scripts to manage retrieve jira issues
     pip install .
     pip install .[unit_test]
 
-Add a token.txt file in the Auth folder with the Token `Auth/token.txt`
-Add a ServerURL.txt file in the Auth folder with the Token `Auth/token.txt`
+Add a token.txt file in the Auth folder with the Token `Config/Auth/token.txt`
+Add a ServerURL.txt file in the Config folder with the url `Config/Server/ServerURL.txt`
