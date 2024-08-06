@@ -8,3 +8,10 @@ dependencies = [
     "requests>=2.32.3",
     "jira==3.8.0",
 ]
+
+[project.optional-dependencies]
+
+    unit_test = [
+        "pytest~=8.3.2",
+        "pytest-cov~=5.0.0"
+    ]
