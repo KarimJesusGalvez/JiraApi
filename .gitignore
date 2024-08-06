@@ -1,2 +1,4 @@
 #Artifacts
-*.egg-info
+/*.egg-info
+/build
+/.idea
