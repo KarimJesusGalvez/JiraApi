@@ -3,7 +3,8 @@ from unittest.mock import Mock
 from _pytest.fixtures import fixture
 from Config.Auth.Token import Token_Headers
 from Config.Auth.Token.Token_Headers import read_token, get_headers
-from XrayApi.Tests import get_defined_test_status
+from Config.Server.Server import get_server_url
+from XrayApi.TestRuns import get_defined_run_status
 
 
 @fixture
@@ -34,4 +35,4 @@ class TestXray:
     class TestTestIssues:
 
         def test_get_defined_test_status(self):
-            assert len(get_defined_test_status().parsed) > 1
+            assert len(get_defined_run_status().parsed) > 1
