@@ -14,7 +14,7 @@ def get_request(url: str) -> JiraResponse:
     return JiraResponse(response)
 
 
-def post_request(url: str, fields: dict) -> JiraResponse:
+def post_request(url: str, fields: dict | list) -> JiraResponse:
     response = requests.post(url, data=fields, headers=get_headers())
     # TODO refactor error msg
     if response.status_code != 200:
