@@ -25,6 +25,9 @@ class TestAuth:
         assert "Authorization" in result
         assert "Accept" in result
 
+    def test_get_server_url(self, reload_headers):
+        assert get_server_url()
+
 
 class TestXray:
 
