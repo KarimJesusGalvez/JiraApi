@@ -1,5 +1,5 @@
 #Tokens
-Auth/Token/token.txt
+Config/Auth/Token/token.txt
 
 #Artifacts
 /*.egg-info
