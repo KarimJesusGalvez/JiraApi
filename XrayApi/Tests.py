@@ -60,10 +60,5 @@ def get_test_field(issue_id: str, field: str) -> JiraResponse:
     return get_issue_steps("test", issue_id, field)
 
 
-def get_defined_test_status() -> JiraResponse:
-    url = server_url + "/rest/raven/1.0/api/settings/teststatuses"
-    return get_request(url)
-
-
 if __name__ == "__main__":
     from Config import Logs

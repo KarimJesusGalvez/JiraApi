@@ -21,6 +21,7 @@ def post_request(url: str, fields: dict | list) -> JiraResponse:
         logging.getLogger().error(f"Error {response.status_code} in response:\n {response.text}")
     return JiraResponse(response)
 
+
 def delete_request(url: str) -> JiraResponse:
     response = requests.delete(url, headers=get_headers())
     # TODO refactor error msg
