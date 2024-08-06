@@ -18,3 +18,11 @@ dependencies = [
 
 [tool.setuptools]
 py-modules = ["XrayApi", "Config", "JiraApi"]
+
+[tool.coverage.run]
+data_file = "reports/.coverage"
+branch = true
+
+[tool.coverage.html]
+directory = "reports/coverage_html"
+skip_empty = true
