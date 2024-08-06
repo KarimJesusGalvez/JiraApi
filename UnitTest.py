@@ -1,9 +1,12 @@
 import importlib
-from unittest.mock import Mock
+from unittest import TestCase
+from unittest.mock import Mock, mock_open, patch
 from _pytest.fixtures import fixture
 from Config.Auth.Token import Token_Headers
 from Config.Auth.Token.Token_Headers import read_token, get_headers
 from Config.Server.Server import get_server_url
+from XrayApi.Cucumber import Import, Export
+from XrayApi.Cucumber.Import import get_file_from_path
 from XrayApi.TestRuns import get_defined_run_status
 
 
@@ -11,6 +14,12 @@ from XrayApi.TestRuns import get_defined_run_status
 def reload_headers():
     yield
     importlib.reload(Token_Headers)
+
+@fixture
+def reload_cucumber():
+    yield
+    importlib.reload(Export)
+    importlib.reload(Import)
 
 
 class TestAuth:
@@ -36,3 +45,18 @@ class TestXray:
 
         def test_get_defined_test_status(self):
             assert len(get_defined_run_status().parsed) > 1
+
+    class TestCucumberImport:
+
+        def test_get_english_feat_from_path(self, reload_cucumber):
+            feat = "#language:en\nFeature:"
+            data_mock = mock_open(read_data=feat)
+            with patch("XrayApi.Cucumber.Import.open", data_mock) as file_mock:
+                assert type(get_file_from_path("PATH")) == type([])
+
+
+        def test_get_non_english_feat_from_path(self, reload_cucumber):
+            feat = "#language:es\nCaracteristica:"
+            data_mock = mock_open(read_data=feat)
+            with patch("XrayApi.Cucumber.Import.open", data_mock) as file_mock:
+                TestCase().assertRaises(ValueError, get_file_from_path, "PATH")
