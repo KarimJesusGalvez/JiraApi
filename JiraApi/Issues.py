@@ -40,5 +40,17 @@ def check_existing_issue(jira: JIRA, project_id: int, issue_type: str, summary: 
     return issues
 
 
+def update_link(jira: JIRA, link_type: str, in_query: str, out_query: str) -> None:
+    in_issues = execute_query(jira, in_query)
+    out_issues = execute_query(jira, out_query)
+    for in_issue in in_issues:  # if issues > 1 version is equal
+        for out_issue in out_issues:  # if issues > 1 version is equal
+            log.info(f"Updating link; {str(in_issue.fields.issuetype)} "
+                        f"{in_issue.key} -> "
+                        f"{link_type} -> "
+                        f"{str(out_issue.fields.issuetype)} {out_issue.key} ...")
+            jira.create_issue_link(link_type, in_issue.key, out_issue.key)
+
+
 if __name__ == "__main__":
     from Config import Logs
