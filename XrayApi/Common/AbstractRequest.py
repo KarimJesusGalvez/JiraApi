@@ -9,6 +9,7 @@ log = logging.getLogger("Xray.AbstractRequest")
 
 
 def get_request(url: str) -> JiraResponse:
+    log.debug(f"Requesting {url}")
     response = requests.get(url, headers=get_headers())
     # TODO refactor error msg
     if response.status_code != 200:
