@@ -48,3 +48,6 @@ def update_folder_name(project_key: str, folder_id: str, name: str) -> JiraRespo
 def delete_folder_name(project_key: str, folder_id: str) -> JiraResponse:
     url = server_url + f"/rest/raven/1.0/api/testrepository/{project_key}/folders/{folder_id}"
     return delete_request(url)
+
+if __name__ == "__main__":
+    from Config import Logs

@@ -16,7 +16,7 @@ def link_test_plan_to_tests(testplan_id: str, add_tests_ids: list, remove_tests_
     return post_request(url, data)
 
 
-def add_tests_from_test_plan(testplan_id: str, tests_ids: list) -> JiraResponse:
+def add_tests_to_test_plan(testplan_id: str, tests_ids: list) -> JiraResponse:
     return link_test_plan_to_tests(testplan_id, tests_ids, [])
 
 
