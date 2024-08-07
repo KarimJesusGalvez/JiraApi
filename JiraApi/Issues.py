@@ -64,5 +64,20 @@ def check_link_name(jira: JIRA, link_type: str) -> bool:
         log.warning(f"Found invalid link name '{link_type}', valid names are {[data.name for data in valid_names]}")
         return False
 
+
+def create_issue_if_not_existing(jira: JIRA, projectid: int, issue_dict: dict) -> Issue | None:
+    if not check_existing_issue(jira, projectid, "Test", issue_dict["Summary"]):
+        return create_issue(jira, issue_dict)
+    else:
+        log.warning("Issue/s found, Skipping Issue creation")
+
+
+def create_issue(jira: JIRA, issue_dict: dict) -> Issue | None:
+
+    new_issue = jira.create_issue(fields=issue_dict)
+    log.warning(f"Created new {new_issue.fields.issuetype} issue: {new_issue.key}")
+    return new_issue
+
+
 if __name__ == "__main__":
     from Config import Logs
