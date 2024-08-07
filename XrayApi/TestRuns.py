@@ -2,6 +2,7 @@ import logging
 
 from XrayApi.Common.AbstractRequest import server_url, get_request, put_request, post_request, delete_request
 from XrayApi.Common.Response import JiraResponse
+from XrayApi.TestStatusDefinitions import get_defined_run_status
 
 log = logging.getLogger("Xray.Runs")
 
@@ -15,11 +16,6 @@ def get_test_run(run_id: str, test_id: str) -> JiraResponse:
     url = server_url + "/rest/raven/1.0/api/testrun"
     query = f"?testExecIssueKey={run_id}&testIssueKey={test_id}"
     return get_request(url + query)
-
-
-def get_defined_run_status() -> JiraResponse:
-    url = server_url + "/rest/raven/1.0/api/settings/teststatuses"
-    return get_request(url)
 
 
 def update_run_by_id(run_id: str, status: str, comment: str, assignee: str,
