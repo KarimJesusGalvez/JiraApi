@@ -31,5 +31,14 @@ def escape_reserved_words_in_query(query: str) -> str:
     return query
 
 
+def check_existing_issue(jira: JIRA, project_id: int, issue_type: str, summary: str) -> list | None:
+    issues = execute_query(jira, f'project = {project_id} AND type = "{issue_type}" AND summary ~ "\\"{summary}\\""')
+    if len(issues) > 0:
+        log.warning(f"{len(issues)} Issue/s found for {summary}, {issues[0].key}")
+    else:
+        log.info("Similar issue not found")
+    return issues
+
+
 if __name__ == "__main__":
     from Config import Logs
