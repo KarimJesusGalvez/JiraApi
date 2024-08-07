@@ -13,16 +13,22 @@ class JiraResponse:
         self._parse_response()
 
     def _parse_response(self) -> None:
-        try:
-            self.parsed = self.raw.json()
-        except JSONDecodeError as error:
-            self.log.error(f"Decode error in pos {error.pos} in document {error.doc}")
-            raise
-
-        self.log.debug(f"Found {len(self.parsed)} resources in {self.raw.url}")
-        for data in self.parsed:
-            self.log.debug(f"Found resource {data}")
-        self.log.info(f"Got response {self.parsed}")
+        if "application/json" in self.raw.raw.headers["Content-Type"]:
+            try:
+                self.parsed = self.raw.json()
+                self.log.debug(f"Found {len(self.parsed)} resources in {self.raw.url}")
+                for data in self.parsed:
+                    self.log.debug(f"Found resource {data}")
+                self.log.info(f"Got response {self.parsed}")
+            except JSONDecodeError as error:
+                self.log.error(f"Decode error in pos {error.pos} in document {error.doc}")
+                raise
+        elif "application/octet-stream" in self.raw.raw.headers["Content-Type"]:
+            self.log.debug(f"Found File data in {self.raw.url}")
+            self.parsed = self.raw.text
+            self._print_to_file()
+        else:
+            self.log.debug(f"Unrecognized response Content-Type {self.raw.raw.headers['Content-Type']} in {self.raw.url}")
 
 
     def _parse_status_code(self) -> None:
@@ -41,3 +47,7 @@ class JiraResponse:
         self.log.error(msg)
         # TODO retrieve HTTPResponse data
         raise ValueError(msg)
+
+    def _print_to_file(self) -> None:
+        # TODO
+        raise NotImplementedError("")
