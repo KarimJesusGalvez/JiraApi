@@ -6,7 +6,6 @@ log = logging.getLogger("Jira.Projects")
 
 def get_project_data(jira: JIRA, project_id: str) -> list[str, str, str]:
     """project_id: project id, name or key"""
-    ids = []
     for project in jira.projects():
         ids = [project.raw["name"], project.raw["key"], project.raw["id"]]
         if project_id in ids:

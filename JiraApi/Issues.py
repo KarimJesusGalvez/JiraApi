@@ -49,9 +49,9 @@ def update_link(jira: JIRA, link_type: str, in_query: str, out_query: str) -> No
     for in_issue in in_issues:  # if issues > 1 version is equal
         for out_issue in out_issues:  # if issues > 1 version is equal
             log.info(f"Updating link; {str(in_issue.fields.issuetype)} "
-                        f"{in_issue.key} -> "
-                        f"{link_type} -> "
-                        f"{str(out_issue.fields.issuetype)} {out_issue.key} ...")
+                     f"{in_issue.key} -> "
+                     f"{link_type} -> "
+                     f"{str(out_issue.fields.issuetype)} {out_issue.key} ...")
             jira.create_issue_link(link_type, in_issue.key, out_issue.key)
 
 
