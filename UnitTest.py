@@ -15,6 +15,7 @@ def reload_headers():
     yield
     importlib.reload(Token_Headers)
 
+
 @fixture
 def reload_cucumber():
     yield
@@ -51,12 +52,11 @@ class TestXray:
         def test_get_english_feat_from_path(self, reload_cucumber):
             feat = "#language:en\nFeature:"
             data_mock = mock_open(read_data=feat)
-            with patch("XrayApi.Cucumber.Import.open", data_mock) as file_mock:
-                assert type(get_file_from_path("PATH")) == type([])
-
+            with patch("XrayApi.Cucumber.Import.open", data_mock):
+                assert isinstance(get_file_from_path("PATH"), list)
 
         def test_get_non_english_feat_from_path(self, reload_cucumber):
             feat = "#language:es\nCaracteristica:"
             data_mock = mock_open(read_data=feat)
-            with patch("XrayApi.Cucumber.Import.open", data_mock) as file_mock:
+            with patch("XrayApi.Cucumber.Import.open", data_mock):
                 TestCase().assertRaises(ValueError, get_file_from_path, "PATH")
