@@ -48,6 +48,14 @@ def export_execution_results_from_test(test_id: str) -> JiraResponse:
     return export_execution_results(f"testKey={test_id}")
 
 
+def export_execution_results_with_fields(query: str, fields: list[str]):
+    #TODO add pagination
+    query += "&includeTestFields="
+    for field in fields:
+        query += field + ","
+    export_execution_results(query[:-1])
+
+
 def export_execution_results(query: str) -> JiraResponse:
     url = server_url + "/rest/raven/1.0/testruns"
     return get_request(url + (query if query.startswith("?") else "?" + query))
