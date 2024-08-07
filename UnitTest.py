@@ -2,9 +2,11 @@ import importlib
 from unittest import TestCase
 from unittest.mock import Mock, mock_open, patch
 from _pytest.fixtures import fixture
+from requests import Response
 from Config.Auth.Token import Token_Headers
 from Config.Auth.Token.Token_Headers import read_token, get_headers
 from Config.Server.Server import get_server_url
+from XrayApi.Common.Response import JiraResponse
 from XrayApi.Cucumber import Import, Export
 from XrayApi.Cucumber.Import import get_file_from_path
 from XrayApi.TestRuns import get_defined_run_status
@@ -60,3 +62,21 @@ class TestXray:
             data_mock = mock_open(read_data=feat)
             with patch("XrayApi.Cucumber.Import.open", data_mock):
                 TestCase().assertRaises(ValueError, get_file_from_path, "PATH")
+
+    class TestAbstractResponse:
+
+        def test_generate_file_name_no_query(self):
+            response = Mock(Response)
+            headers = {"Content-Type": "None"}
+            url = "https://server.url/rest/raven/1.0/export/test"
+            raw_mock = Mock(url=url, headers=headers)
+            response.configure_mock(status_code=200, raw=raw_mock, url=url)
+            assert "server.url_1.0_export_test" == JiraResponse(response)._generate_file_name()
+
+        def test_generate_file_name_query(self):
+            response = Mock(Response)
+            headers = {"Content-Type": "None"}
+            url = "https://server.url/rest/raven/1.0/export/test?filter=1670"
+            raw_mock = Mock(url=url, headers=headers)
+            response.configure_mock(status_code=200, raw=raw_mock, url=url)
+            assert "server.url_filter=1670" == JiraResponse(response)._generate_file_name()

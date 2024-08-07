@@ -1,5 +1,6 @@
 import logging
 from json import JSONDecodeError
+from os import path
 
 from requests import Response
 
@@ -29,7 +30,8 @@ class JiraResponse:
         elif "application/octet-stream" in self.raw.raw.headers["Content-Type"]:
             self.log.debug(f"Found File data in {self.raw.url}")
             self.parsed = self.raw.text
-            self._print_to_file()
+            self.print_response_to_file(self._generate_file_name() + ".feature")
+
         else:
             self.log.debug(f"Unrecognized response "
                            f"Content-Type {self.raw.raw.headers['Content-Type']} in {self.raw.url}")
@@ -55,6 +57,18 @@ class JiraResponse:
         # TODO retrieve HTTPResponse data
         raise ValueError(msg)
 
-    def _print_to_file(self) -> None:
-        # TODO
-        raise NotImplementedError("")
+    def _generate_file_name(self) -> str:
+        url_components = self.raw.url.split("/")
+        name = url_components[2] + "_"
+        if "?" in url_components[-1]:
+            name += self.raw.url.split("?")[1]
+        else:
+            for step in url_components[-3:]:
+                name += step + "_"
+            name = name[:-1]
+        self.log.warning(name)
+        return name
+
+    def print_response_to_file(self, filename: str) -> None:
+        with open(path.join(path.dirname(__file__), "..", "..", "reports", filename), "w+") as file:
+            file.write(self.parsed)
