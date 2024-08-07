@@ -1,7 +1,7 @@
 import logging
 from jira import JIRA
 from JiraApi.Issues import search_issues
-from JiraApi.JiraServer import JiraServer
+from JiraApi.Common.JiraServer import JiraServer
 
 log = logging.getLogger("Jira.Issues.Version")
 

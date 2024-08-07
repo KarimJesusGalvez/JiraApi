@@ -6,7 +6,7 @@ from requests import Response
 from Config.Auth.Token import Token_Headers
 from Config.Auth.Token.Token_Headers import read_token, get_headers
 from Config.Server.Server import get_server_url
-from JiraApi.JiraServer import JiraServer
+from JiraApi.Common.JiraServer import JiraServer
 from XrayApi.Common.Response import JiraResponse
 from XrayApi.Cucumber import Import, Export
 from XrayApi.Cucumber.Import import get_file_from_path
