@@ -36,5 +36,22 @@ def delete_test_execution(execution_id: str) -> JiraResponse:
     return delete_request(url)
 
 
+def export_execution_results_from_test_plan(test_plan_id: str) -> JiraResponse:
+    return export_execution_results(f"testPlanKey={test_plan_id}")
+
+
+def export_execution_results_from_filter(filter_id: str) -> JiraResponse:
+    return export_execution_results(f"savedFilterId={filter_id}")
+
+
+def export_execution_results_from_test(test_id: str) -> JiraResponse:
+    return export_execution_results(f"testKey={test_id}")
+
+
+def export_execution_results(query: str) -> JiraResponse:
+    url = server_url + "/rest/raven/1.0/testruns"
+    return get_request(url + (query if query.startswith("?") else "?" + query))
+
+
 if __name__ == "__main__":
     from Config import Logs
