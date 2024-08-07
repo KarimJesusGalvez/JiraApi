@@ -6,6 +6,7 @@ from requests import Response
 from Config.Auth.Token import Token_Headers
 from Config.Auth.Token.Token_Headers import read_token, get_headers
 from Config.Server.Server import get_server_url
+from JiraApi.JiraServer import JiraServer
 from XrayApi.Common.Response import JiraResponse
 from XrayApi.Cucumber import Import, Export
 from XrayApi.Cucumber.Import import get_file_from_path
@@ -80,3 +81,12 @@ class TestXray:
             raw_mock = Mock(url=url, headers=headers)
             response.configure_mock(status_code=200, raw=raw_mock, url=url)
             assert "server.url_filter=1670" == JiraResponse(response)._generate_file_name()
+
+
+class TestJiraApi:
+
+    class TestJiraServer:
+
+        def test_server_entry_exit(self):
+            with JiraServer():
+                pass
