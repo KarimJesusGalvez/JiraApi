@@ -40,6 +40,9 @@ class JiraResponse:
             msg = f"Bad_request in Response with {code} and error text '{self.raw.text}'"
         elif code == 401:
             msg = "Unauthorized licence'"
+        elif code == 406:
+            self.raw.request.headers["Authorization"] = "****"
+            msg = f"Not Acceptable error in Request \nURL:{self.raw.request.url}\nHeaders:{self.raw.request.headers}\nBody:{self.raw.request.body}'"
         elif code == 500:
             msg = "Internal Server error in Response'"
         else:
