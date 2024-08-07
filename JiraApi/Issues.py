@@ -67,8 +67,8 @@ def check_link_name(jira_server: JIRA, link_type: str) -> bool:
         return False
 
 
-def create_issue_if_not_existing(jira_server: JIRA, projectid: int, issue_dict: dict) -> Issue | None:
-    if not check_existing_issue(jira_server, projectid, "Test", issue_dict["Summary"]):
+def create_issue_if_not_existing(jira_server: JIRA, project_id: int, issue_dict: dict) -> Issue | None:
+    if not check_existing_issue(jira_server, project_id, "Test", issue_dict["Summary"]):
         return create_issue(jira_server, issue_dict)
     else:
         log.warning("Issue/s found, Skipping Issue creation")
