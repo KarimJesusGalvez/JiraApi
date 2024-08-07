@@ -2,6 +2,8 @@
 Config/Auth/Token/token.txt
 #Config
 Config/Server/ServerURL.txt
+#results
+reports/*
 #Artifacts
 /*.egg-info
 /build
