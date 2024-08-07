@@ -8,7 +8,7 @@ log = logging.getLogger("Cucumber.Export")
 
 def import_feature(feature: bytes, project_short_name: str, update_repository: bool) -> JiraResponse:
     url = server_url + "/rest/raven/1.0/import/feature"
-    query = f"?projectKey={project_short_name}& updateRepository = {'true' if update_repository else 'false'}"
+    query = f"?projectKey={project_short_name}&updateRepository={'true' if update_repository else 'false'}"
     headers = get_headers()
     headers["Content-Type"] = "multipart/form-data"
     response = requests.post(url + query, headers=headers, params={"-F": feature})

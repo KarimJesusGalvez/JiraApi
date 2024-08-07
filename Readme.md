@@ -2,7 +2,7 @@
 Collection of scripts to manage retrieve jira issues
 
 
-# Set-up
+# Setup
 
     pip install .
     pip install .[unit_test]
