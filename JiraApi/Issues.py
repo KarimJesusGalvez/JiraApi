@@ -41,6 +41,9 @@ def check_existing_issue(jira: JIRA, project_id: int, issue_type: str, summary: 
 
 
 def update_link(jira: JIRA, link_type: str, in_query: str, out_query: str) -> None:
+    if not check_link_name(jira, link_type):
+        raise ValueError(f"Invalid link {link_type}")
+
     in_issues = execute_query(jira, in_query)
     out_issues = execute_query(jira, out_query)
     for in_issue in in_issues:  # if issues > 1 version is equal
@@ -51,6 +54,15 @@ def update_link(jira: JIRA, link_type: str, in_query: str, out_query: str) -> No
                         f"{str(out_issue.fields.issuetype)} {out_issue.key} ...")
             jira.create_issue_link(link_type, in_issue.key, out_issue.key)
 
+
+def check_link_name(jira: JIRA, link_type: str) -> bool:
+    valid_names = jira.issue_link_types()
+    if link_type in valid_names:
+        log.debug(f"Link {link_type} is valid")
+        return True
+    else:
+        log.warning(f"Found invalid link name '{link_type}', valid names are {[data.name for data in valid_names]}")
+        return False
 
 if __name__ == "__main__":
     from Config import Logs
