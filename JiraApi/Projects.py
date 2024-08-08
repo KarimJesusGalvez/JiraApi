@@ -16,5 +16,15 @@ def get_project_data(jira: JIRA, project_id: str) -> dict[str, str]:
     raise ValueError(msg)
 
 
+def get_project_issue_types(jira_server: JIRA, project_id: str) -> dict[str, str]:
+    issue_types = {}
+    for issue_type in jira_server.project(project_id).raw["issueTypes"]:
+        issue_types[issue_type["name"]] = issue_type["description"]
+    log.debug(f"Retrieved issue types for project {project_id}, {issue_types}")
+    return issue_types
+
+
+
+
 if __name__ == "__main__":
     from Config import Logs
