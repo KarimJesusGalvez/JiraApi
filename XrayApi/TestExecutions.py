@@ -1,9 +1,10 @@
 import logging
+from os import sep
 
 from XrayApi.Common.AbstractRequest import server_url, get_request, post_request, delete_request
 from XrayApi.Common.Response import JiraResponse
 
-log = logging.getLogger("Xray.Executions")
+log = logging.getLogger(f"Xray.{globals()['__file__'].split(sep)[-1].replace('.py', '')}")
 
 
 def get_tests_in_execution(execution_id: str, details: bool = False) -> JiraResponse:

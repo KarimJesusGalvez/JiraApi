@@ -1,8 +1,7 @@
-import logging
 from jira import JIRA, Issue
+from Config.Logs import create_logger_from_subfolder
 
-
-log = logging.getLogger("Jira.Issues")
+log = create_logger_from_subfolder(globals()['__file__'])
 
 
 def search_issues(jira_server: JIRA, query: str) -> list[Issue]:
@@ -79,7 +78,3 @@ def create_issue(jira_server: JIRA, issue_dict: dict) -> Issue | None:
     new_issue = jira_server.create_issue(fields=issue_dict)
     log.warning(f"Created new {new_issue.fields.issuetype} issue: {new_issue.key}")
     return new_issue
-
-
-if __name__ == "__main__":
-    from Config import Logs

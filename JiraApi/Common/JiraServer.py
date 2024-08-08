@@ -1,11 +1,8 @@
-import logging
 import traceback
 from typing import Any
 from jira import JIRA
 from Config.Auth.Token.Token_Headers import read_token
 from Config.Server.Server import get_server_url
-
-log = logging.getLogger("Jira.Server")
 
 
 class JiraServer:

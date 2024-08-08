@@ -1,8 +1,11 @@
 import requests
 
 from Config.Auth.Token.Token_Headers import get_headers
+from Config.Logs import create_logger_from_subfolder
 from XrayApi.Common.AbstractRequest import server_url, get_request
 from XrayApi.Common.Response import JiraResponse
+
+log = create_logger_from_subfolder(globals()['__file__'], "XrayApi")
 
 
 def export_feature(query: str) -> JiraResponse:
@@ -24,7 +27,3 @@ def export_features_by_test_id(test_ids: list[str], compress: bool = False) -> J
     if compress:
         query += "&fz=true"
     return export_feature(query)
-
-
-if __name__ == "__main__":
-    from Config import Logs

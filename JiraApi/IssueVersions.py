@@ -1,9 +1,9 @@
-import logging
 from jira import JIRA
+from Config.Logs import create_logger_from_subfolder
 from JiraApi.Issues import search_issues
 from JiraApi.Common.JiraServer import JiraServer
 
-log = logging.getLogger("Jira.Issues.Version")
+log = create_logger_from_subfolder(globals()['__file__'])
 
 
 def update_fix_versions(jira_server: JIRA, issue_id: str, fix_version: str) -> None:
@@ -31,7 +31,3 @@ def get_project_fix_versions(jira_server: JIRA, project_id: str) -> list[str]:
         versions.append(version.raw["name"])
     log.debug(f"Retrieved versions for project {project_id}, {versions}")
     return versions
-
-
-if __name__ == "__main__":
-    from Config import Logs

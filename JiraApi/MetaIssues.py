@@ -1,13 +1,11 @@
-import logging
 from jira import JIRA
 from Config.Auth.Token.Token_Headers import get_headers
+from Config.Logs import create_logger_from_subfolder
 from Config.Server.Server import get_server_url
 from typing import Any
 import requests
 
-from JiraApi.Projects import get_project_data
-
-log = logging.getLogger("Jira.MetaIssues")
+log = create_logger_from_subfolder(globals()['__file__'])
 
 
 def get_meta_issue_fields(project_id: str, issue_id: str) -> dict:
@@ -56,13 +54,13 @@ def _parse_meta_issue_fields_name(response: dict) -> dict:
 
 
 def _print_meta_issue_dict(field: dict, depth: int) -> str:
-    sep = "    " * depth
+    whitespace = "    " * depth
     msg = "\n"
     for key, value in field.items():
         if isinstance(value, dict):
             msg += _print_meta_issue_dict(value, depth + 1)
         else:
-            msg += f"{sep}{key}, {value}"
+            msg += f"{whitespace}{key}, {value}"
     return msg
 
 
@@ -72,21 +70,21 @@ def _parse_meta_issue_fields_data_type(field: dict) -> str:
 
 def _print_meta_issue_fields_data(field: dict) -> str:
     msg = ""
-    sep = "    "
+    whitespace = "    "
 
     for key, value in field.items():
         if isinstance(value, dict):
             _print_meta_issue_dict(value, 1)
         elif isinstance(value, list):
             for val in value:
-                msg = f"{sep}[{key}"
+                msg = f"{whitespace}[{key}"
                 if isinstance(value, dict):
                     msg += _print_meta_issue_dict(value, 2)
                 else:
-                    msg += f"\n{sep * 2}{val}"
-                msg += f"\n{sep}]"
+                    msg += f"\n{whitespace * 2}{val}"
+                msg += f"\n{whitespace}]"
         else:
-            msg += f"{sep}{key}, {value}"
+            msg += f"{whitespace}{key}, {value}"
     return msg
 
 
@@ -120,10 +118,3 @@ def _get_dict_template_for_field(data: dict, field: str, project_id: str) -> dic
 
 def _parse_meta_issue_fields_data_required(field: dict) -> str:
     return field["required"]
-
-
-if __name__ == "__main__":
-    from Config import Logs
-    from Common.JiraServer import JiraServer
-    with JiraServer() as jira:
-        print(get_fields_for_all_issue_types(jira, get_project_data(jira, "MSHYP")["id"]))

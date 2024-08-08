@@ -1,5 +1,9 @@
+from Config.Logs import create_logger_from_subfolder
 from XrayApi.Common.AbstractRequest import get_request, server_url
 from XrayApi.Common.Response import JiraResponse
+
+
+log = create_logger_from_subfolder(globals()['__file__'], "XrayApi")
 
 
 def get_defined_run_status() -> JiraResponse:

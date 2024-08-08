@@ -1,9 +1,10 @@
 import logging
+from os import sep
 
 from XrayApi.Common.AbstractRequest import server_url, post_request, get_request
 from XrayApi.Common.Response import JiraResponse
 
-log = logging.getLogger("Xray.TestPlans")
+log = logging.getLogger(f"Xray.{globals()['__file__'].split(sep)[-1].replace('.py', '')}")
 
 def get_test_plan(testplan_id: str) -> JiraResponse:
     url = server_url + f"/rest/raven/1.0/api/testplan/{testplan_id}/test"

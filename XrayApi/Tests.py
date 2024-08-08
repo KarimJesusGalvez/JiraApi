@@ -1,10 +1,10 @@
-import logging
-from requests import Response
+from Config.Logs import create_logger_from_subfolder
 from XrayApi.Common.AbstractRequest import get_issue_steps, get_request, server_url
 from XrayApi.Common.Response import JiraResponse
 
 
-log = logging.getLogger("Xray.Tests")
+log = create_logger_from_subfolder(globals()['__file__'], "XrayApi")
+
 
 def get_test_plan_from_test(issue_id: str) -> JiraResponse:
     return get_test_field(issue_id, "testplans")
@@ -14,10 +14,11 @@ def get_test_executions_from_test(issue_id: str) -> JiraResponse:
     return get_test_field(issue_id, "testexecutions")
 
 
-def get_test_preconditions_from_test(issue_id: str) -> Response:
+def get_test_preconditions_from_test(issue_id: str) -> JiraResponse:
     return get_test_field(issue_id, "preconditions")
 
-def get_test_sets_from_test(issue_id: str) -> Response:
+
+def get_test_sets_from_test(issue_id: str) -> JiraResponse:
     return get_test_field(issue_id, "testsets")
 
 
@@ -61,7 +62,3 @@ def export_test_data_to_json(query: str) -> JiraResponse:
 
 def get_test_field(issue_id: str, field: str) -> JiraResponse:
     return get_issue_steps("test", issue_id, field)
-
-
-if __name__ == "__main__":
-    from Config import Logs

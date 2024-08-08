@@ -4,6 +4,10 @@ from os import path
 
 from requests import Response
 
+from Config.Logs import create_logger_from_subfolder
+
+log = create_logger_from_subfolder(globals()['__file__'], "XrayApi")
+
 
 class JiraResponse:
     def __init__(self, response: Response) -> None:

@@ -1,10 +1,9 @@
-import logging
-
+from Config.Logs import create_logger_from_subfolder
 from XrayApi.Common.AbstractRequest import server_url, get_request, put_request, post_request, delete_request
 from XrayApi.Common.Response import JiraResponse
 from XrayApi.TestStatusDefinitions import get_defined_run_status
 
-log = logging.getLogger("Xray.Runs")
+log = create_logger_from_subfolder(globals()['__file__'], "XrayApi")
 
 
 def get_run_tests(run_id: str) -> JiraResponse:
@@ -106,7 +105,3 @@ def update_run_asignee(run_id: str, user_name: str) -> JiraResponse:
     url = server_url + f"/rest/raven/1.0/api/testrun/{run_id}/assignee"
     query = f"?user={user_name}"
     return put_request(url + query, "")
-
-
-if __name__ == "__main__":
-    from Config import Logs

@@ -1,5 +1,9 @@
+from Config.Logs import create_logger_from_subfolder
 from XrayApi.Common.AbstractRequest import server_url, get_request, put_request, post_request, delete_request
 from XrayApi.Common.Response import JiraResponse
+
+
+log = create_logger_from_subfolder(globals()['__file__'], "XrayApi")
 
 
 def get_project_repositories(project_key: str) -> JiraResponse:
@@ -48,6 +52,3 @@ def update_folder_name(project_key: str, folder_id: str, name: str) -> JiraRespo
 def delete_folder_name(project_key: str, folder_id: str) -> JiraResponse:
     url = server_url + f"/rest/raven/1.0/api/testrepository/{project_key}/folders/{folder_id}"
     return delete_request(url)
-
-if __name__ == "__main__":
-    from Config import Logs

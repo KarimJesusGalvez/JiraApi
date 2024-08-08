@@ -1,11 +1,12 @@
 import logging
 import requests
+from Config.Logs import create_logger_from_subfolder
 from Config.Server.Server import get_server_url
 from Config.Auth.Token.Token_Headers import get_headers
 from XrayApi.Common.Response import JiraResponse
 
 server_url = get_server_url()
-log = logging.getLogger("Xray.AbstractRequest")
+log = create_logger_from_subfolder(globals()['__file__'], "XrayApi")
 
 
 def get_request(url: str) -> JiraResponse:

@@ -1,7 +1,7 @@
-import logging
 from jira import JIRA
+from Config.Logs import create_logger_from_subfolder
 
-log = logging.getLogger("Jira.Projects")
+log = create_logger_from_subfolder(globals()['__file__'])
 
 
 def get_project_data(jira: JIRA, project_id: str) -> dict[str, str]:
@@ -22,7 +22,3 @@ def get_project_issue_types(jira_server: JIRA, project_id: str) -> dict[str, str
         issue_types[issue_type["name"]] = issue_type["description"]
     log.debug(f"Retrieved issue types for project {project_id}, {issue_types}")
     return issue_types
-
-
-if __name__ == "__main__":
-    from Config import Logs

@@ -1,10 +1,11 @@
-import logging
 import requests
 from Config.Auth.Token.Token_Headers import get_headers
+from Config.Logs import create_logger_from_subfolder
 from XrayApi.Common.AbstractRequest import server_url
 from XrayApi.Common.Response import JiraResponse
 
-log = logging.getLogger("Cucumber.Export")
+log = create_logger_from_subfolder(globals()['__file__'], "XrayApi")
+
 
 def import_feature(feature: bytes, project_short_name: str, update_repository: bool) -> JiraResponse:
     url = server_url + "/rest/raven/1.0/import/feature"
@@ -15,7 +16,7 @@ def import_feature(feature: bytes, project_short_name: str, update_repository: b
     return JiraResponse(response)
 
 
-def get_file_from_path(target_path: str):
+def get_file_from_path(target_path: str) -> list[str]:
     with open(target_path, "r") as file:
         data = file.readlines()
     if "language:" in data[0] and ":en" not in data[0]:
