@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 import requests
 from jira import JIRA
 from Config.Auth.Token.Token_Headers import get_headers
@@ -85,15 +86,47 @@ def get_fields_for_all_issue_types(jira_server: JIRA, project_id: str) -> dict:
     url = get_server_url() + f"/rest/api/2/issue/createmeta/{project_id}/issuetypes"
     result = {}
     for issue_type in jira_server.project(project_id).raw["issueTypes"]:
-        print(f"Searching for {issue_type['name']}({issue_type['id']}) in project {project_id}")
+        log.info(f"Searching for {issue_type['name']}({issue_type['id']}) in project {project_id}")
         response = requests.get(url + f"/{issue_type['id']}", headers=get_headers())
         assert response.status_code == 200, f"{response.status_code} Error" \
                                             f"\n URL:{response.request.url}" \
                                             f"\n Headers:{response.raw.headers}" \
                                             f"\n Body:{response.raw._body}"
-        result[issue_type['name']] = _parse_meta_issue_fields_type(response.json())
-        log.info(f"Issue type {issue_type['name']} has fields {result[issue_type['name']]}")
+        # result[issue_type['name']] = _parse_meta_issue_fields_type(response.json())
+        # log.info(f"Issue type {issue_type['name']} has fields {result[issue_type['name']]}")
+        result = create_dict_template_for_issue(issue_type['name'], response.json(), project_id)
     return result
+
+
+def _generate_empty_dataset_for_field(data_type: str, project_id: str) -> Any:
+    if data_type == "array":
+        return []
+    elif data_type == "string":
+        return ""
+    elif data_type == "project":
+        return {"id": project_id}
+    elif data_type == "user":
+        # TODO return jira.user data
+        return {}
+
+
+def create_dict_template_for_issue(issue_name: str, response: dict, project_id: str) -> dict:
+    field_dict = {'issuetype': {'name': f'{issue_name}'}}
+    for field, data in _parse_meta_issue_fields_name(response).items():
+        if _parse_meta_issue_fields_data_required(data):
+            field_dict[field] = _get_dict_template_for_field(data, field, project_id)
+    return field_dict
+
+
+def _get_dict_template_for_field(data, field, project_id):
+    data_type = _parse_meta_issue_fields_data_type(data)
+    log.debug(f"Found '{'mandatory' if _parse_meta_issue_fields_data_required(data) else 'optional'}' "
+              f"field '{field}', with type '{data_type}'")
+    return _generate_empty_dataset_for_field(data_type, project_id)
+
+
+def _parse_meta_issue_fields_data_required(field: dict) -> str:
+    return field["required"]
 
 
 if __name__ == "__main__":
