@@ -83,14 +83,18 @@ def _parse_meta_issue_fields_type(response: dict) -> dict:
 
 def get_fields_for_all_issue_types(jira_server: JIRA, project_id: str) -> dict[str, tuple[dict, dict]]:
     result = {}
-    for issue_type in jira_server.project(project_id).raw["issueTypes"]:
+    for issue_type in get_all_issue_types_data(jira_server, project_id):
         log.info(f"Searching for {issue_type['name']}({issue_type['id']}) in project {project_id}")
         response = get_meta_issue_fields(project_id, issue_type['id'])
-        template = create_dict_template_for_issue(issue_type['name'], response, project_id)
+        template = create_dict_template_for_issue(issue_type['id'], project_id, response)
         fields = _parse_meta_issue_fields_type(response)
         log.info(f"Issue type {issue_type['name']} has fields {fields}")
         result[issue_type['name']] = (fields, template)
     return result
+
+
+def get_all_issue_types_data(jira_server: JIRA, project_id: str):
+    return jira_server.project(project_id).raw["issueTypes"]
 
 
 def get_meta_issue_fields(project_id: str, issue_id: str) -> dict:
@@ -115,8 +119,10 @@ def _generate_empty_dataset_for_field(data_type: str, project_id: str) -> Any:
         return {}
 
 
-def create_dict_template_for_issue(issue_name: str, response: dict, project_id: str) -> dict:
-    field_dict = {'issuetype': {'name': f'{issue_name}'}}
+def create_dict_template_for_issue(issue_id: str, project_id: str,  response: dict= None) -> dict:
+    if not response:
+        get_meta_issue_fields(project_id, issue_id)
+    field_dict = {'issuetype': {'id': f'{issue_id}'}}
     for field, data in _parse_meta_issue_fields_name(response).items():
         if _parse_meta_issue_fields_data_required(data):
             field_dict[field] = _get_dict_template_for_field(data, field, project_id)
