@@ -1,5 +1,8 @@
 import logging
+import requests
 from jira import JIRA
+from Config.Auth.Token.Token_Headers import get_headers
+from Config.Server.Server import get_server_url
 
 log = logging.getLogger("Jira.Projects")
 
@@ -23,7 +26,23 @@ def get_project_issue_types(jira_server: JIRA, project_id: str) -> dict[str, str
     log.debug(f"Retrieved issue types for project {project_id}, {issue_types}")
     return issue_types
 
+def _parse_meta_issue_fields_type(response):
+    raise NotImplementedError("")
 
+
+def get_fields_for_all_issue_types(jira_server: JIRA, project_id: str) -> dict:
+    url = get_server_url() + f"/rest/api/2/issue/createmeta/{project_id}/issuetypes"
+    result = {}
+    for issue_type in jira_server.project(project_id).raw["issueTypes"]:
+        print(f"Searching for {issue_type['name']}({issue_type['id']}) in project {project_id}")
+        response = requests.get(url + f"/{issue_type['id']}", headers=get_headers())
+        assert response.status_code == 200, f"{response.status_code} Error" \
+                                            f"\n URL:{response.request.url}" \
+                                            f"\n Headers:{response.raw.headers}" \
+                                            f"\n Body:{response.raw._body}"
+        result[issue_type['name']] = _parse_meta_issue_fields_type(response.json())
+    print(result)
+    return result
 
 
 if __name__ == "__main__":
