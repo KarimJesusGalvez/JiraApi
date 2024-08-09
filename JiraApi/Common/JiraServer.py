@@ -2,7 +2,10 @@ import traceback
 from typing import Any
 from jira import JIRA
 from Config.Auth.Token.Token_Headers import read_token
+from Config.Logs import create_logger_from_subfolder
 from Config.Server.Server import get_server_url
+
+log = create_logger_from_subfolder(globals()['__file__'])
 
 
 class JiraServer:
