@@ -1,42 +1,32 @@
 from jira import JIRA
-from Config.Auth.Token.Token_Headers import get_headers
+from jira.resources import Field
 from Config.Logs import create_logger_from_subfolder
-from Config.Server.Server import get_server_url
 from typing import Any
-import requests
+
+from JiraApi.Projects import get_project_data
 
 log = create_logger_from_subfolder(globals()['__file__'])
 
 
-def get_meta_issue_fields(project_id: str, issue_id: str) -> dict:
-    url = get_server_url() + f"/rest/api/2/issue/createmeta/{project_id}/issuetypes"
-    response = requests.get(url + f"/{issue_id}", headers=get_headers())
-    assert response.status_code == 200, f"{response.status_code} Error" \
-                                        f"\n URL:{response.request.url}" \
-                                        f"\n Headers:{response.raw.headers}" \
-                                        f"\n Body:{response.raw._body}"
-    return response.json()
+def get_fields_for_meta_issue(jira_server: JIRA, project_id: str, issue_id: str) -> list[Field]:
+    return jira_server.project_issue_fields(project_id, issue_id)
 
 
-def create_dict_template_for_issue(issue_id: str, project_id: str,  response: dict = None) -> dict:
-    if not response:
-        get_meta_issue_fields(project_id, issue_id)
+def create_dict_template_for_issue(issue_id: str, project_id: str, fields: list[Field]) -> dict:
     field_dict = {'issuetype': {'id': f'{issue_id}'}}
-    for field, data in _parse_meta_issue_fields_name(response).items():
-        if _parse_meta_issue_fields_data_required(data):
-            field_dict[field] = _get_dict_template_for_field(data, field, project_id)
+    for field in fields:
+        field_dict[field] = _get_dict_template_for_field(field, project_id)
     return field_dict
 
 
-def get_fields_for_all_issue_types(jira_server: JIRA, project_id: str) -> dict[str, tuple[dict, dict]]:
+def get_fields_for_all_issue_types(jira_server: JIRA, project_id: str) -> dict[str, tuple[list[Field], dict]]:
     result = {}
     for issue_type in get_all_issue_types_data(jira_server, project_id):
         log.info(f"Searching for {issue_type['name']}({issue_type['id']}) in project {project_id}")
-        response = get_meta_issue_fields(project_id, issue_type['id'])
+        response = get_fields_for_meta_issue(jira_server, project_id, issue_type['id'])
+        log.info(f"Issue type {issue_type['name']} has fields {response}")
         template = create_dict_template_for_issue(issue_type['id'], project_id, response)
-        fields = _parse_meta_issue_fields_type(response)
-        log.info(f"Issue type {issue_type['name']} has fields {fields}")
-        result[issue_type['name']] = (fields, template)
+        result[issue_type['name']] = (response, template)
     return result
 
 
@@ -109,11 +99,10 @@ def _generate_empty_dataset_for_field(data_type: str, project_id: str) -> Any:
         return {}
 
 
-def _get_dict_template_for_field(data: dict, field: str, project_id: str) -> dict:
-    data_type = _parse_meta_issue_fields_data_type(data)
-    log.debug(f"Found '{'mandatory' if _parse_meta_issue_fields_data_required(data) else 'optional'}' "
-              f"field '{field}', with type '{data_type}'")
-    return _generate_empty_dataset_for_field(data_type, project_id)
+def _get_dict_template_for_field(field: Field, project_id: str) -> dict:
+    log.debug(f"Found '{'mandatory' if field.raw['required'] else 'optional'}' "
+              f"field '{field}', with type '{field.raw['schema']['type']}'")
+    return _generate_empty_dataset_for_field(field.raw['schema']['type'], project_id)
 
 
 def _parse_meta_issue_fields_data_required(field: dict) -> str:
