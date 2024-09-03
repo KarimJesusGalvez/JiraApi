@@ -16,12 +16,13 @@ def import_feature(feature: bytes, project_short_name: str, update_repository: b
     return JiraResponse(response)
 
 
-def get_file_from_path(target_path: str) -> list[str]:
-    with open(target_path, "r") as file:
+def get_file_from_path(target_path: str) -> bytes:
+    with open(target_path, "r", encoding="utf_8") as file:
         data = file.readlines()
-    if "language:" in data[0] and ":en" not in data[0]:
-        msg = f"Cannot import, Feature is not in English in path {target_path}"
-        log.error(msg)
-        raise ValueError(msg)
-    else:
+        if "language:" in data[0] and ":en" not in data[0]:
+            msg = f"Cannot import, Feature is not in English in path {target_path}"
+            log.error(msg)
+            raise ValueError(msg)
+    with open(target_path, "rb") as file:
+        data = file.read()
         return data
